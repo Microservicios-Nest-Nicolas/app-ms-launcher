@@ -7,6 +7,20 @@ services:
     ports:
       - 8222:8222
 
+  # Order DB
+  orders-db:
+    container_name: orders_database
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./orders-ms/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=ordersdb
+
   # Client gateway
   client-gateway:
     build: ./client-gateway
@@ -42,17 +56,3 @@ services:
       - NATS_SERVERS=nats://nats-server:4222
     depends_on:
       - orders-db
-
-  # Order DB
-  orders-db:
-    container_name: orders_database
-    image: postgres:16.2
-    restart: always
-    volumes:
-      - ./orders-ms/postgres:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=ordersdb
